@@ -15,7 +15,7 @@ class Topic(models.Model):
 
 
 class Redactor(AbstractUser):
-    years_of_experience = models.IntegerField()
+    years_of_experience = models.IntegerField(null=True, blank=True)
 
     class Meta:
         ordering = ("username",)
@@ -30,3 +30,6 @@ class Article(models.Model):
         settings.AUTH_USER_MODEL,
         related_name="articles"
     )
+
+    def __str__(self):
+        return self.title
