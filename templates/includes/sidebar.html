@@ -1,6 +1,6 @@
 <ul class="sidebar-nav">
-  <li><a href="tasks:index">Home</a></li>
-  <li><a href="#">All Topics</a></li>
-  <li><a href="#">All redactors</a></li>
-  <li><a href="#">All articles</a></li>
+  <li><a href="{% url 'catalog:index' %}">Home</a></li>
+  <li><a href="{% url 'catalog:topic-list' %}">All topics</a></li>
+  <li><a href="{% url 'catalog:redactor-list' %}">All redactors</a></li>
+  <li><a href="{% url 'catalog:article-list' %}">All articles</a></li>
 </ul>

@@ -1,5 +1,6 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
+from django.views import generic
 
 from catalog.models import Topic, Redactor, Article
 
@@ -11,3 +12,34 @@ def index(request: HttpRequest) -> HttpResponse:
         "articles": Article.objects.all().count(),
     }
     return render(request, "catalog/index.html", context=context)
+
+
+class TopicListView(generic.ListView):
+    model = Topic
+
+
+class RedactorListView(generic.ListView):
+    model = Redactor
+
+
+class ArticleListView(generic.ListView):
+    model = Article
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.topic = None
+
+        topic_id = self.request.GET.get("topics")
+        if topic_id:
+            queryset = queryset.filter(topics__id=topic_id)
+            try:
+                self.topic = Topic.objects.get(id=topic_id)
+            except Topic.DoesNotExist:
+                self.topic = None
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["selected_topic"] = self.topic
+        return context

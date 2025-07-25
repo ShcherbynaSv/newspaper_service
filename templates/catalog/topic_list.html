@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Topics List</h1>
+  {% if topic_list %}
+    <ul>
+      {% for topic in topic_list %}
+        <li><a href="{% url 'catalog:article-list' %}?topics={{ topic.id }}">
+          {{ topic.name }}
+        </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>There are no topics</p>
+  {% endif %}
+  {% endblock %}
