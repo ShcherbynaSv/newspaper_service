@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.urls import reverse
 
 from newspaper_service import settings
 
@@ -20,6 +21,9 @@ class Redactor(AbstractUser):
     class Meta:
         ordering = ("username",)
 
+    def get_absolute_url(self):
+        return reverse("catalog:redactor-detail", args=[str(self.pk)])
+
 
 class Article(models.Model):
     title = models.CharField(max_length=255)
@@ -33,3 +37,6 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse("catalog:article-detail", args=[str(self.pk)])

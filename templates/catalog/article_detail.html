@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>{{ object.title }}</h1>
+  <hr>
+  <p><strong>Published date: </strong> {{ object.published_date }}</p>
+  <p><strong>Content:</strong></p>
+  <p>{{ object.content }}</p>
+  <table class="table">
+    <tr>
+      <th>Topics</th>
+      <th>Redactors</th>
+    </tr>
+    <tr>
+      <td>
+        {% for topic in object.topics.all %}
+          <p><a href="{% url 'catalog:article-list' %}?topics={{ topic.id }}">{{ topic.name }}</a></p>
+        {% endfor %}
+      </td>
+      <td>
+        {% for redactor in object.redactors.all %}
+          <p><a href="{{ redactor.get_absolute_url }}">{{ redactor.first_name }} {{ redactor.last_name }}</a></p>
+        {% endfor %}
+      </td>
+    </tr>
+  </table>
+{% endblock %}

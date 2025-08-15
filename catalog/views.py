@@ -22,6 +22,10 @@ class RedactorListView(generic.ListView):
     model = Redactor
 
 
+class RedactorDetailView(generic.DetailView):
+    model = Redactor
+
+
 class ArticleListView(generic.ListView):
     model = Article
 
@@ -43,3 +47,13 @@ class ArticleListView(generic.ListView):
         context = super().get_context_data(**kwargs)
         context["selected_topic"] = self.topic
         return context
+
+
+class ArticleDetailView(generic.DetailView):
+    model = Article
+
+    def get_queryset(self):
+        return (
+            super().get_queryset()
+            .prefetch_related("topics", "redactors")
+        )
