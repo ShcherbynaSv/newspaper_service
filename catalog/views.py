@@ -16,10 +16,12 @@ def index(request: HttpRequest) -> HttpResponse:
 
 class TopicListView(generic.ListView):
     model = Topic
+    paginate_by = 10
 
 
 class RedactorListView(generic.ListView):
     model = Redactor
+    paginate_by = 10
 
 
 class RedactorDetailView(generic.DetailView):
@@ -28,6 +30,7 @@ class RedactorDetailView(generic.DetailView):
 
 class ArticleListView(generic.ListView):
     model = Article
+    paginate_by = 10
 
     def get_queryset(self):
         queryset = super().get_queryset()
