@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Redactors List</h1>
+  <h1>
+    Redactors List
+    <a style="float: right;" class="btn btn-primary" href="{% url 'catalog:redactor-create' %}"><b>+</b></a>
+  </h1>
   {% if redactor_list %}
     <ul>
       {% for redactor in redactor_list %}

@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
 
+from catalog.forms import RedactorCreationForm, RedactorUpdateForm
 from catalog.models import Topic, Redactor, Article
 
 
@@ -46,8 +47,33 @@ class RedactorListView(generic.ListView):
     paginate_by = 10
 
 
+class RedactorCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Redactor
+    form_class = RedactorCreationForm
+    template_name = "catalog/redactor_form.html"
+    success_url = reverse_lazy("catalog:redactor-list")
+
+
 class RedactorDetailView(generic.DetailView):
     model = Redactor
+
+
+class RedactorUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Redactor
+    form_class = RedactorUpdateForm
+    template_name = "catalog/redactor_form.html"
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "catalog:redactor-detail",
+            kwargs={"pk": self.object.pk}
+        )
+
+
+class RedactorDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Redactor
+    template_name = "catalog/confirm_delete_redactor.html"
+    success_url = reverse_lazy("catalog:redactor-list")
 
 
 class ArticleListView(generic.ListView):

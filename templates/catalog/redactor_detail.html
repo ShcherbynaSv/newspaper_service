@@ -2,6 +2,8 @@
 
 {% block content %}
   <h1>{{ object.first_name }} {{ object.last_name }} ({{ object.years_of_experience }} year{{ object.years_of_experience|pluralize }} of experience)</h1>
+  <a class="btn btn-secondary" href="{% url 'catalog:redactor-update' object.id %}">Edit redactor information</a>
+  <a class="btn btn-danger" href="{% url 'catalog:redactor-delete' object.id %}">Delete redactor</a>
   <hr>
   {% if object.email %}
     <p><strong>E-mail: </strong> {{ object.email }}</p>
