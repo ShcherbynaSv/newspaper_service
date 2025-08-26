@@ -1,5 +1,7 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views import generic
 
 from catalog.models import Topic, Redactor, Article
@@ -17,6 +19,26 @@ def index(request: HttpRequest) -> HttpResponse:
 class TopicListView(generic.ListView):
     model = Topic
     paginate_by = 10
+
+
+class TopicCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Topic
+    fields = "__all__"
+    template_name = "catalog/topic_form.html"
+    success_url = reverse_lazy("catalog:topic-list")
+
+
+class TopicUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Topic
+    fields = "__all__"
+    template_name = "catalog/topic_form.html"
+    success_url = reverse_lazy("catalog:topic-list")
+
+
+class TopicDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Topic
+    template_name = "catalog/confirm_delete_topic.html"
+    success_url = reverse_lazy("catalog:topic-list")
 
 
 class RedactorListView(generic.ListView):
