@@ -2,6 +2,8 @@
 
 {% block content %}
   <h1>{{ object.title }}</h1>
+  <a class="btn btn-secondary" href="{% url 'catalog:article-update' object.id %}">Edit article</a>
+  <a class="btn btn-danger" href="{% url 'catalog:article-delete' object.id %}">Delete article</a>
   <hr>
   <p><strong>Published date: </strong> {{ object.published_date }}</p>
   <p><strong>Content:</strong></p>

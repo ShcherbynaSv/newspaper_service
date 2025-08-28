@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
 
-from catalog.forms import RedactorCreationForm, RedactorUpdateForm
+from catalog.forms import RedactorCreationForm, RedactorUpdateForm, ArticleForm
 from catalog.models import Topic, Redactor, Article
 
 
@@ -100,6 +100,13 @@ class ArticleListView(generic.ListView):
         return context
 
 
+class ArticleCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Article
+    form_class = ArticleForm
+    template_name = "catalog/article_form.html"
+    success_url = reverse_lazy("catalog:article-list")
+
+
 class ArticleDetailView(generic.DetailView):
     model = Article
 
@@ -108,3 +115,21 @@ class ArticleDetailView(generic.DetailView):
             super().get_queryset()
             .prefetch_related("topics", "redactors")
         )
+
+
+class ArticleUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Article
+    form_class = ArticleForm
+    template_name = "catalog/article_form.html"
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "catalog:article-detail",
+            kwargs={"pk": self.object.pk}
+        )
+
+
+class ArticleDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Article
+    template_name = "catalog/confirm_delete_article.html"
+    success_url = reverse_lazy("catalog:article-list")

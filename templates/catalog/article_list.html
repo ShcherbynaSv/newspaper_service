@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Articles</h1>
+  <h1>
+    Articles
+    <a style="float: right;" class="btn btn-primary" href="{% url 'catalog:article-create' %}"><b>+</b></a>
+  </h1>
 
   {% if selected_topic %}
     <p>Filtered by topic: <strong>{{ selected_topic.name }}</strong></p>
