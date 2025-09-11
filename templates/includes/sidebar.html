@@ -1,16 +1,19 @@
-<ul class="sidebar-nav">
+<ul class="sidebar-nav list-group">
   {% if user.is_authenticated %}
-    <li><strong>User: </strong>{{ user.username }}</li>
-    <form action="{% url 'logout' %}" method="post">
-      {% csrf_token %}
-      <button class="btn btn-primary" type="submit">Logout</button>
-    </form>
+    <li class="list-group-item"><strong>User: </strong>{{ user.username }}</li>
+    <li class="list-group-item">
+      <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button class="btn btn-primary" type="submit">Logout</button>
+      </form>
+    </li>
+
   {% else %}
-    <li><a href="{% url 'login' %}">Login</a></li>
+    <li class="list-group-item"><a href="{% url 'login' %}">Login</a></li>
   {% endif %}
   <br>
-  <li><a href="{% url 'catalog:index' %}">Home</a></li>
-  <li><a href="{% url 'catalog:topic-list' %}">All topics</a></li>
-  <li><a href="{% url 'catalog:redactor-list' %}">All redactors</a></li>
-  <li><a href="{% url 'catalog:article-list' %}">All articles</a></li>
+  <li class="list-group-item"><a href="{% url 'catalog:index' %}">Home</a></li>
+  <li class="list-group-item"><a href="{% url 'catalog:topic-list' %}">All topics</a></li>
+  <li class="list-group-item"><a href="{% url 'catalog:redactor-list' %}">All redactors</a></li>
+  <li class="list-group-item"><a href="{% url 'catalog:article-list' %}">All articles</a></li>
 </ul>

@@ -1,16 +1,30 @@
 {% extends "base.html" %}
+{% load crispy_forms_filters %}
 
 {% block content %}
   <h1>
-    Articles
+    Articles List
     <a style="float: right;" class="btn btn-primary" href="{% url 'catalog:article-create' %}"><b>+</b></a>
   </h1>
 
   {% if selected_topic %}
     <p>Filtered by topic: <strong>{{ selected_topic.name }}</strong></p>
-    <p><a href="{% url 'catalog:article-list' %}">Clear filter</a></p>
+    <p>
+      <a href="{% url 'catalog:article-list' %}?title={{ request.GET.title }}">
+        Clear filter
+      </a>
+    </p>
   {% endif %}
 
+  <form class="form-inline" method="get" action="">
+    {% if selected_topic %}
+      <input type="hidden" name="topic" value="{{ selected_topic.id }}">
+    {% endif %}
+
+    {{ search_form|crispy }}
+    <input class="btn btn-secondary" type="submit" value="🔍">
+  </form>
+  <br>
   {% if article_list %}
     <ul>
       {% for article in article_list %}

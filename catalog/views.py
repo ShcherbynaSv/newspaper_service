@@ -4,7 +4,14 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
 
-from catalog.forms import RedactorCreationForm, RedactorUpdateForm, ArticleForm
+from catalog.forms import (
+    RedactorCreationForm,
+    RedactorUpdateForm,
+    ArticleForm,
+    TopicSearchForm,
+    ArticleSearchForm,
+    RedactorSearchForm
+)
 from catalog.models import Topic, Redactor, Article
 
 
@@ -20,6 +27,19 @@ def index(request: HttpRequest) -> HttpResponse:
 class TopicListView(generic.ListView):
     model = Topic
     paginate_by = 10
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(TopicListView, self).get_context_data(**kwargs)
+        name = self.request.GET.get("name", "")
+        context["search_form"] = TopicSearchForm(initial={"name": name})
+        return context
+
+    def get_queryset(self):
+        queryset = Topic.objects.all()
+        form = TopicSearchForm(self.request.GET)
+        if form.is_valid():
+            return queryset.filter(name__icontains=form.cleaned_data["name"])
+        return queryset
 
 
 class TopicCreateView(LoginRequiredMixin, generic.CreateView):
@@ -45,6 +65,41 @@ class TopicDeleteView(LoginRequiredMixin, generic.DeleteView):
 class RedactorListView(generic.ListView):
     model = Redactor
     paginate_by = 10
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(RedactorListView, self).get_context_data(**kwargs)
+        full_name = self.request.GET.get("full_name")
+        search_form = RedactorSearchForm(
+            initial={"full_name": full_name}
+        )
+        context["search_form"] = search_form
+        return context
+
+    def get_queryset(self):
+        queryset = Redactor.objects.all()
+        form = RedactorSearchForm(self.request.GET)
+        if form.is_valid():
+            query = form.cleaned_data.get("full_name")
+            if query:
+                parts = query.strip().split()
+                if len(parts) == 2:
+                    first, second = parts
+                    queryset = (
+                        queryset.filter(
+                            first_name__icontains=first,
+                            last_name__icontains=second
+                        )
+                        | queryset.filter(
+                            first_name__icontains=second,
+                            last_name__icontains=first
+                        )
+                    )
+                else:
+                    queryset = (
+                        queryset.filter(first_name__icontains=query)
+                        | queryset.filter(last_name__icontains=query)
+                    )
+        return queryset
 
 
 class RedactorCreateView(LoginRequiredMixin, generic.CreateView):
@@ -82,21 +137,31 @@ class ArticleListView(generic.ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        self.topic = None
+        queryset = queryset.prefetch_related("topics")
 
-        topic_id = self.request.GET.get("topics")
-        if topic_id:
-            queryset = queryset.filter(topics__id=topic_id)
-            try:
-                self.topic = Topic.objects.get(id=topic_id)
-            except Topic.DoesNotExist:
-                self.topic = None
+        topic_id = self.request.GET.get("topic")
+        self.topic = Topic.objects.filter(id=topic_id).first() \
+            if topic_id else None
+        if self.topic:
+            queryset = queryset.filter(topics=self.topic)
+
+        self.search_form = ArticleSearchForm(
+            self.request.GET or None,
+            initial={"title": self.request.GET.get("title", "")}
+        )
+        if self.search_form.is_valid():
+            query = self.search_form.cleaned_data.get("title")
+            if query:
+                queryset = queryset.filter(title__icontains=query)
 
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["selected_topic"] = self.topic
+        context.update({
+            "selected_topic": self.topic,
+            "search_form": self.search_form,
+        })
         return context
 
 

@@ -48,3 +48,32 @@ class ArticleForm(forms.ModelForm):
             "topics": forms.CheckboxSelectMultiple(),
             "redactors": forms.CheckboxSelectMultiple(),
         }
+
+
+class TopicSearchForm(forms.Form):
+    name = forms.CharField(
+        max_length=255,
+        required=False,
+        label="",
+        widget=forms.TextInput(attrs={"placeholder": "Search by topic name"})
+    )
+
+
+class ArticleSearchForm(forms.Form):
+    title = forms.CharField(
+        max_length=255,
+        required=False,
+        label="",
+        widget=forms.TextInput(
+            attrs={"placeholder": "Search by article title"}
+        )
+    )
+
+
+class RedactorSearchForm(forms.Form):
+    full_name = forms.CharField(
+        max_length=255,
+        required=False,
+        label="",
+        widget=forms.TextInput(attrs={"placeholder": "Search by full name"})
+    )
