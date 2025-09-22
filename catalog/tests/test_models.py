@@ -14,7 +14,7 @@ class ModelsTests(TestCase):
             username=self.username,
             password=self.password
         )
-        self.article=Article.objects.create(
+        self.article = Article.objects.create(
             title="test-title",
             content="test-content",
             published_date="2025-09-25"
@@ -32,12 +32,18 @@ class ModelsTests(TestCase):
         self.assertEqual(self.redactor.years_of_experience, 10)
 
     def test_redactor_get_absolute_url(self):
-        expected_url = reverse("catalog:redactor-detail", args=[str(self.redactor.pk)])
+        expected_url = reverse(
+            "catalog:redactor-detail",
+            args=[str(self.redactor.pk)]
+        )
         self.assertEqual(self.redactor.get_absolute_url(), expected_url)
 
     def test_article_str(self):
         self.assertEqual(str(self.article), self.article.title)
 
     def test_article_get_absolute_url(self):
-        expected_url = reverse("catalog:article-detail", args=[str(self.article.pk)])
+        expected_url = reverse(
+            "catalog:article-detail",
+            args=[str(self.article.pk)]
+        )
         self.assertEqual(self.article.get_absolute_url(), expected_url)
