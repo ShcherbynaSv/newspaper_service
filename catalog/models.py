@@ -35,6 +35,9 @@ class Article(models.Model):
         related_name="articles"
     )
 
+    class Meta:
+        ordering = ("title",)
+
     def __str__(self):
         return self.title
 
